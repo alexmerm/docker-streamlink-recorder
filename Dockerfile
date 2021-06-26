@@ -1,7 +1,8 @@
 FROM python:3.9.0-buster
 LABEL maintainer="lauwarm@mailbox.org"
 
-ENV streamlinkVersion=2.0.0
+
+ENV streamlinkVersion=2.2.0
 
 ADD https://github.com/streamlink/streamlink/releases/download/${streamlinkVersion}/streamlink-${streamlinkVersion}.tar.gz /opt/
 
@@ -18,13 +19,17 @@ RUN mkdir /home/plugins
 
 COPY ./streamlink-recorder.sh /home/script/
 COPY ./entrypoint.sh /home/script
+WORKDIR /home/script
 
-RUN ["chmod", "+x", "/home/script/entrypoint.sh"]
+RUN ["chmod", "+x", "/home/script/entrypoint.sh" ]
+RUN chmod +x /home/script/streamlink-recorder.sh
 
-ENTRYPOINT [ "/home/script/entrypoint.sh" ]
+#ENTRYPOINT [ "/home/script/entrypoint.sh" ]
+#ENTRYPOINT ["/bin/sh"]
 
 # replace with gosu???
 #USER myuser
 
 # point entrypoint to /bin/sh???
-CMD /bin/sh ./home/script/streamlink-recorder.sh ${streamOptions} ${streamLink} ${streamQuality} ${streamName}
+#CMD /home/script/streamlink-recorder.sh ${streamOptions} ${streamLink} ${streamQuality} ${streamName}
+CMD /home/script/streamlink-recorder.sh ${streamOptions} ${streamLink} ${streamQuality} ${streamName}
